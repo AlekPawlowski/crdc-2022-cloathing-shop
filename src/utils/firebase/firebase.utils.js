@@ -3,7 +3,8 @@ import {
     getAuth,
     signInWithRedirect,
     signInWithPopup,
-    GoogleAuthProvider
+    GoogleAuthProvider,
+    createUserWithEmailAndPassword
 } from "firebase/auth";
 
 import {
@@ -25,18 +26,20 @@ const firebaseConfig = {
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 
-provider.setCustomParameters({
+googleProvider.setCustomParameters({
     prompt: "select_account"
 })
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
+export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider);
 
 export const db = getFirestore() // initilize database inside console 
 
 export const createUserDocumentFromAuth = async (userAuth) => {
+    if (!userAuth) return;
     // see if reference exist in document module
     // doc takes 3 params (database, colection, identyfier)
     const userDocRef = doc(db, 'users', userAuth.uid);
@@ -68,3 +71,10 @@ export const createUserDocumentFromAuth = async (userAuth) => {
 
     return userDocRef;
 }
+
+export const createAuthUserWithEmailAndPassword = async (email, password) => {
+    if (!email || !password) return; // if those dosent exist there is no need to run this func czuase of lack of data
+
+    return await createUserWithEmailAndPassword(auth, email, password);
+}
+
