@@ -6,12 +6,12 @@ import {
     GoogleAuthProvider
 } from "firebase/auth";
 
-import { 
+import {
     getFirestore, // initilize firestroe
     doc, //doc
     getDoc, // acces data
     setDoc // seting document data
- } from "firebase/firestore"
+} from "firebase/firestore"
 
 const firebaseConfig = {
     apiKey: "AIzaSyDn8vSZ32zRLNGZm_9XkRkmFg8acGjHc5I",
@@ -28,7 +28,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();
 
 provider.setCustomParameters({
-        prompt: "select_account"
+    prompt: "select_account"
 })
 
 export const auth = getAuth();
@@ -36,7 +36,7 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 
 export const db = getFirestore() // initilize database inside console 
 
-export const createUserDocumentFromAuth = async (userAuth) =>{
+export const createUserDocumentFromAuth = async (userAuth) => {
     // see if reference exist in document module
     // doc takes 3 params (database, colection, identyfier)
     const userDocRef = doc(db, 'users', userAuth.uid);
@@ -45,6 +45,26 @@ export const createUserDocumentFromAuth = async (userAuth) =>{
 
     const userSnapshot = await getDoc(userDocRef);
     // console.log(userSnapshot.exist()); // -> we can check if reference exist (could be useful cause if dosent exist then create new one);
-    
 
+    // check if user data exist
+    //return userDocRef
+    // else if user data dosent exist
+    // create set document with data from user auth in my colection
+    if (!userSnapshot.exists()) {
+        const { displayName, email } = userAuth;
+        const createAt = new Date();
+        try {
+            await setDoc(userDocRef, {
+                displayName,
+                email,
+                createAt
+            })
+        } catch (error) {
+            console.log('error createing user', error)
+        }
+    } else {
+        console.log('user data exist');
+    }
+
+    return userDocRef;
 }
