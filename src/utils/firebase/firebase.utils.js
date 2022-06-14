@@ -6,6 +6,12 @@ import {
     GoogleAuthProvider
 } from "firebase/auth";
 
+import { 
+    getFirestore, // initilize firestroe
+    doc, //doc
+    getDoc, // acces data
+    setDoc // seting document data
+ } from "firebase/firestore"
 
 const firebaseConfig = {
     apiKey: "AIzaSyDn8vSZ32zRLNGZm_9XkRkmFg8acGjHc5I",
@@ -27,3 +33,18 @@ provider.setCustomParameters({
 
 export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+
+export const db = getFirestore() // initilize database inside console 
+
+export const createUserDocumentFromAuth = async (userAuth) =>{
+    // see if reference exist in document module
+    // doc takes 3 params (database, colection, identyfier)
+    const userDocRef = doc(db, 'users', userAuth.uid);
+    console.log(userDocRef);
+    // if collection dosent exist then firebase will create that for us 
+
+    const userSnapshot = await getDoc(userDocRef);
+    // console.log(userSnapshot.exist()); // -> we can check if reference exist (could be useful cause if dosent exist then create new one);
+    
+
+}
