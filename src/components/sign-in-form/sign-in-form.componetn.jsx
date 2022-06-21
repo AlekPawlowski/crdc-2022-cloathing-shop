@@ -1,23 +1,22 @@
 import { useState } from "react";
 import {
+    signInWithGooglePopup,
     createUserDocumentFromAuth,
-    createAuthUserWithEmailAndPassword,
+    signInAuthUserWithEmailAndPassword,
 } from "../../utils/firebase/firebase.utils";
 
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 
-import './sign-up-form.style.scss' 
+import "./sign-in-form.style.scss";
 const defaultFormFields = {
-    displayName: "",
     email: "",
     password: "",
-    confirmPassword: "",
 };
 
-const SignUpForm = () => {
+const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
-    const { displayName, email, password, confirmPassword } = formFields;
+    const { email, password } = formFields;
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -28,41 +27,42 @@ const SignUpForm = () => {
         setFormFields(defaultFormFields);
     };
 
+    const signInWithGoogle = async () => {
+        const { user } = await signInWithGooglePopup();
+        await createUserDocumentFromAuth(user);
+        console.log("some", user);
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         // confirm that the password matches, see if we auth with email and passwords
-        if (password !== confirmPassword) {
-            return;
-        }
         try {
-            const { user } = await createAuthUserWithEmailAndPassword(
+            const response = await signInAuthUserWithEmailAndPassword(
                 email,
                 password
             );
-            await createUserDocumentFromAuth(user, { displayName });
+            console.log(response);
         } catch (err) {
-            if (err.code === "auth/email-already-in-use") {
-                alert("already in use");
-            } else {
-                console.log("there is err", err);
+            switch (err.code) {
+                case "auth/wrong-password":
+                    alert("incorrectPassword");
+                    break;
+                case "auth/user-not-found":
+                    alert("user not found");
+                    break;
+                default:
+                    alert("there is an error");
             }
+            console.log(err.code);
         }
         resetFormFields();
     };
 
     return (
         <div className="sign-up-container">
-            <h2>dont have an account?</h2>
-            <span>Sign up with your email and passwors</span>
+            <h2>already have an account?</h2>
+            <span>Sign up with your email and password</span>
             <form onSubmit={handleSubmit}>
-                <FormInput
-                    label="displayName"
-                    type="text"
-                    required
-                    onChange={handleChange}
-                    name="displayName"
-                    value={displayName}
-                />
                 <FormInput
                     label="email"
                     type="email"
@@ -79,18 +79,19 @@ const SignUpForm = () => {
                     name="password"
                     value={password}
                 />
-                <FormInput
-                    label="Confirm Password"
-                    type="password"
-                    required
-                    onChange={handleChange}
-                    name="confirmPassword"
-                    value={confirmPassword}
-                />
-                <Button type="submit">Sign up</Button>
+                <div className="buttons-container">
+                    <Button type="submit">Sign in</Button>
+                    <Button
+                        buttonType="google"
+                        type="button"
+                        onClick={signInWithGoogle}
+                    >
+                        Google sign in
+                    </Button>
+                </div>
             </form>
         </div>
     );
 };
 
-export default SignUpForm;
+export default SignInForm;
