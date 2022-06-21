@@ -1,10 +1,20 @@
-import { Fragment } from "react";
+import "./form-input.styles.scss";
 
-const formInput = () => {
-    return <Fragment>
-        <label htmlFor=""></label>
-        <input type="text" />
-    </Fragment>;
+const FormInput = ({ label, ...otherProps }) => {
+    return (
+        <div className="group">
+            <input className="form-input" {...otherProps} />
+            {label && (
+                <label
+                    className={`${
+                        otherProps.value.length ? "shrink" : ""
+                    } form-input-label`}
+                >
+                    {label}
+                </label>
+            )}
+        </div>
+    );
 };
 
-export default formInput;
+export default FormInput;
