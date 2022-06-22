@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
     signInWithGooglePopup,
     createUserDocumentFromAuth,
@@ -7,6 +7,8 @@ import {
 
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
+
+import { UserContext } from "../../context/user.context";
 
 import "./sign-in-form.style.scss";
 const defaultFormFields = {
@@ -17,6 +19,8 @@ const defaultFormFields = {
 const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
+
+    const { setCurrentUser } = useContext(UserContext);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -37,11 +41,11 @@ const SignInForm = () => {
         event.preventDefault();
         // confirm that the password matches, see if we auth with email and passwords
         try {
-            const response = await signInAuthUserWithEmailAndPassword(
+            const { user } = await signInAuthUserWithEmailAndPassword(
                 email,
                 password
             );
-            console.log(response);
+            setCurrentUser(user);
         } catch (err) {
             switch (err.code) {
                 case "auth/wrong-password":
