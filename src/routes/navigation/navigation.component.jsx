@@ -3,13 +3,17 @@ import { Outlet, Link } from "react-router-dom";
 
 import { ReactComponent as CrwnLogo } from "../../assets/crown.svg";
 import { UserContext } from "../../context/user.context";
+import { ProductsContext } from "../../context/products.context";
 
 import { signOutUsers } from "../../utils/firebase/firebase.utils";
+
+
 
 import "./navigation.styles.scss";
 
 const Navigation = () => {
     const { currentUser, setCurrentUser } = useContext(UserContext);
+
 
     return (
         <Fragment>
