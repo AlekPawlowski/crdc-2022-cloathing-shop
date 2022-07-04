@@ -36,7 +36,7 @@ const Checkout = () => {
             ) : (
                 <h1>koszyk jest pusty</h1>
             )}
-            <span className="total">total: {priceSum}</span>
+            <span className="total">total: ${priceSum}</span>
         </div>
     );
 };
