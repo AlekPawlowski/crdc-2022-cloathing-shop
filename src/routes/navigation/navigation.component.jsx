@@ -1,4 +1,4 @@
-import { Fragment, useContext} from "react";
+import { Fragment, useContext } from "react";
 import { Outlet, Link } from "react-router-dom";
 
 import CartIcon from "../../components/cart-icon/cart-icon.component";
@@ -28,7 +28,9 @@ const Navigation = () => {
                         SHOP
                     </Link>
                     {currentUser ? (
-                        <span className="nav-link" onClick={signOutUsers}>Sign Out</span>
+                        <span className="nav-link" onClick={signOutUsers}>
+                            Sign Out
+                        </span>
                     ) : (
                         <Link className="nav-link" to="/auth">
                             Sign In
