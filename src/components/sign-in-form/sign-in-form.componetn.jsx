@@ -6,7 +6,7 @@ import {
 } from "../../utils/firebase/firebase.utils";
 
 import FormInput from "../form-input/form-input.component";
-import Button from "../button/button.component";
+import Button, { BUTTON_TYPE_CLASSES } from "../button/button.component";
 
 import "./sign-in-form.style.scss";
 const defaultFormFields = {
@@ -17,7 +17,6 @@ const defaultFormFields = {
 const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
-
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -80,7 +79,7 @@ const SignInForm = () => {
                 <div className="buttons-container">
                     <Button type="submit">Sign in</Button>
                     <Button
-                        buttonType="google"
+                        buttonType={BUTTON_TYPE_CLASSES.google}
                         type="button"
                         onClick={signInWithGoogle}
                     >
